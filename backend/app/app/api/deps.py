@@ -11,7 +11,7 @@ from app.core.config import settings
 from app.crud import crud_user
 from app.exceptions import exceptions
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/access-token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_STR}/login/access-token")
 
 
 def get_db() -> Generator:

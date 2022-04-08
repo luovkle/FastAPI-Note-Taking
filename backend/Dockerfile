@@ -13,6 +13,6 @@ COPY ./app/app /note-taking/app
 run mkdir /note-taking/static
 
 CMD [ \
-    "gunicorn", "app.main:app", "--workers", "4", "--worker-class", \
+    "gunicorn", "app.main:app", "--worker-class", \
     "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000" \
 ]

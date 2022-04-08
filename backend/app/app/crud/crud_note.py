@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.models import Note
 from app.schemas import NoteCreate, NoteUpdate, NoteInDB
 from app.exceptions import exceptions
+from app.utils import generate_zip_file
 
 
 class CRUDNote:
@@ -91,6 +92,11 @@ class CRUDNote:
             db.delete(note)
         db.commit()
         return notes
+
+    def export(self, db: Session, owner_id: int) -> str:
+        notes = self.get_by_owner_id(db=db, owner_id=owner_id)
+        file = generate_zip_file(notes=notes)
+        return file
 
 
 crud_note = CRUDNote()

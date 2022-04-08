@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user, get_db
 from app.crud import crud_note
 from app.models import User
-from app.schemas import NoteCreate, NoteRead, NoteUpdate
+from app.schemas import NoteCreate, NoteRead, NoteUpdate, Url
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -29,7 +30,7 @@ def get_notes(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
     title: Optional[str] = Query(default=None),
-    tag: Optional[str] = Query(default=None)
+    tag: Optional[str] = Query(default=None),
 ):
     if title and tag:
         notes = crud_note.get_by_title_and_tag(db, current_user.id, title, tag)
@@ -60,7 +61,15 @@ def update_note(
 def delete_note(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-    title: str = Path(default=..., description="Note title")
+    title: str = Path(default=..., description="Note title"),
 ):
     note_obj = crud_note.delete(db=db, owner_id=current_user.id, title=title)
     return note_obj
+
+
+@router.get(path="/export", response_model=Url)
+def export_notes(
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+):
+    file = crud_note.export(db=db, owner_id=current_user.id)
+    return {"url": f"{settings.URL_BASE}{settings.STATIC_URL}/{file}"}

@@ -26,8 +26,21 @@ services:
       - 8000:8000
     restart:
       always
+    volumes:
+      - zip_files:/note-taking/static
     depends_on:
       - db
 
+  cleaner:
+    build:
+      ./cleaner
+    command:
+      python -u cleaner.py static
+    volumes:
+      - zip_files:/cleaner/static
+    depends_on:
+      - app
+
 volumes:
   db_data:
+  zip_files:

@@ -11,6 +11,7 @@ COPY ./app/alembic /note-taking/alembic
 COPY ./app/app /note-taking/app
 
 run mkdir /note-taking/static
+run mkdir /note-taking/logs
 
 CMD [ \
     "gunicorn", "app.main:app", "--worker-class", \

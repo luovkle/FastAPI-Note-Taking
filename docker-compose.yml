@@ -21,13 +21,15 @@ services:
     command: >
       bash -c "alembic upgrade head
       && gunicorn app.main:app --worker-class \
-      uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"
+      uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 \
+      --log-level INFO --access-logfile logs/app.log"
     ports:
       - 8000:8000
     restart:
       always
     volumes:
       - zip_files:/note-taking/static
+      - app_logs:/note-taking/logs
     depends_on:
       - db
 
@@ -44,3 +46,4 @@ services:
 volumes:
   db_data:
   zip_files:
+  app_logs:
